@@ -1,0 +1,9 @@
+package com.gpcasiapac.gpchelloworldkmp.feature.hello.data.datasource
+
+import com.gpcasiapac.gpchelloworldkmp.common.domain.DataResult
+import com.gpcasiapac.gpchelloworldkmp.feature.hello.data.dto.HelloMessageDto
+
+interface HelloNetworkDataSource {
+    suspend fun fetchHelloMessage(name: String, language: String): DataResult<HelloMessageDto>
+    suspend fun fetchRandomGreeting(): DataResult<HelloMessageDto>
+}
