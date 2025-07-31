@@ -1,6 +1,11 @@
+//import org.jetbrains.compose.desktop.application.dsl.TargetFormat
+//import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
+//import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -26,6 +31,19 @@ kotlin {
             implementation(libs.androidx.activity.compose)
         }
         commonMain.dependencies {
+            implementation(projects.common.commonData)
+            implementation(projects.common.commonDomain)
+            implementation(projects.common.commonPresentation)
+
+            implementation(projects.core.coreData)
+            implementation(projects.core.coreDomain)
+            implementation(projects.core.corePresentation)
+
+            implementation(projects.feature.hello.helloData)
+            implementation(projects.feature.hello.helloDomain)
+            implementation(projects.feature.hello.helloPresentation)
+
+
             implementation(compose.runtime)
             implementation(compose.foundation)
             implementation(compose.material3)
@@ -34,6 +52,8 @@ kotlin {
             implementation(compose.components.uiToolingPreview)
             implementation(libs.androidx.lifecycle.viewmodelCompose)
             implementation(libs.androidx.lifecycle.runtimeCompose)
+
+            implementation(libs.koin.compose)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

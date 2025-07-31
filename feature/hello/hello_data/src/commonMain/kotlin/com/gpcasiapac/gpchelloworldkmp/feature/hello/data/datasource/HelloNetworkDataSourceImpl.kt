@@ -11,7 +11,7 @@ class HelloNetworkDataSourceImpl : HelloNetworkDataSource {
         "Good day", "Howdy", "Salutations"
     )
     
-    override suspend fun fetchHelloMessage(name: String, language: String): DataResult<HelloMessageDto> {
+    override suspend fun getHelloMessageDto(name: String, language: String): DataResult<HelloMessageDto> {
         return try {
             // Simulate network delay
             delay(1000)
@@ -45,7 +45,7 @@ class HelloNetworkDataSourceImpl : HelloNetworkDataSource {
         }
     }
     
-    override suspend fun fetchRandomGreeting(): DataResult<HelloMessageDto> {
+    override suspend fun getRandomGreetingDto(): DataResult<HelloMessageDto> {
         return try {
             delay(800)
             

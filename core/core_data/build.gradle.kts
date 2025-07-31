@@ -11,16 +11,15 @@ kotlin {
         minSdk = libs.versions.android.minSdk.get().toInt()
     }
 
-    iosX64()
-    iosArm64()
-    iosSimulatorArm64()
     jvm()
 
     sourceSets {
         commonMain.dependencies {
-            implementation(projects.core.coreDomain)
+            implementation(projects.common.commonDomain)
             implementation(projects.common.commonData)
-            
+
+            implementation(projects.core.coreDomain)
+
             implementation(libs.kotlinx.coroutines.core)
             implementation(libs.kotlinx.serialization.json)
             implementation(libs.kermit)

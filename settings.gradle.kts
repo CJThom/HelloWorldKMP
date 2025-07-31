@@ -28,9 +28,9 @@ dependencyResolutionManagement {
     }
 }
 
-plugins {
-    id("org.gradle.toolchains.foojay-resolver-convention") version "1.0.0"
-}
+//plugins {
+//    id("org.gradle.toolchains.foojay-resolver-convention") version "1.0.0"
+//}
 
 // Configuration module
 include(":config")
@@ -44,7 +44,6 @@ include(":common:common_domain")
 include(":common:common_presentation")
 
 // Core modules
-include(":core:core_shared")
 include(":core:core_data")
 include(":core:core_domain")
 include(":core:core_presentation")

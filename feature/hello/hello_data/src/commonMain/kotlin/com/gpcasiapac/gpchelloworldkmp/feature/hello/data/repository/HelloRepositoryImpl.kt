@@ -10,8 +10,8 @@ class HelloRepositoryImpl(
     private val networkDataSource: HelloNetworkDataSource
 ) : HelloRepository {
     
-    override suspend fun getHelloMessage(name: String, language: String): DataResult<HelloMessage> {
-        return when (val result = networkDataSource.fetchHelloMessage(name, language)) {
+    override suspend fun fetchHelloMessage(name: String, language: String): DataResult<HelloMessage> {
+        return when (val result = networkDataSource.getHelloMessageDto(name, language)) {
             is DataResult.Success -> {
                 try {
                     DataResult.Success(result.data.toDomain())
@@ -26,8 +26,8 @@ class HelloRepositoryImpl(
         }
     }
     
-    override suspend fun getRandomGreeting(): DataResult<HelloMessage> {
-        return when (val result = networkDataSource.fetchRandomGreeting()) {
+    override suspend fun fetchRandomGreeting(): DataResult<HelloMessage> {
+        return when (val result = networkDataSource.getRandomGreetingDto()) {
             is DataResult.Success -> {
                 try {
                     DataResult.Success(result.data.toDomain())

@@ -4,6 +4,6 @@ import com.gpcasiapac.gpchelloworldkmp.common.domain.DataResult
 import com.gpcasiapac.gpchelloworldkmp.feature.hello.data.dto.HelloMessageDto
 
 interface HelloNetworkDataSource {
-    suspend fun fetchHelloMessage(name: String, language: String): DataResult<HelloMessageDto>
-    suspend fun fetchRandomGreeting(): DataResult<HelloMessageDto>
+    suspend fun getHelloMessageDto(name: String, language: String): DataResult<HelloMessageDto>
+    suspend fun getRandomGreetingDto(): DataResult<HelloMessageDto>
 }

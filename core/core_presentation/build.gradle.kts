@@ -13,9 +13,6 @@ kotlin {
         minSdk = libs.versions.android.minSdk.get().toInt()
     }
 
-    iosX64()
-    iosArm64()
-    iosSimulatorArm64()
     jvm()
 
     sourceSets {
@@ -26,9 +23,11 @@ kotlin {
         }
         
         commonMain.dependencies {
-            implementation(projects.core.coreDomain)
+            implementation(projects.common.commonDomain)
             implementation(projects.common.commonPresentation)
-            
+
+            implementation(projects.core.coreDomain)
+
             implementation(compose.runtime)
             implementation(compose.foundation)
             implementation(compose.material3)
@@ -36,7 +35,7 @@ kotlin {
             
             implementation(libs.androidx.lifecycle.viewmodelCompose)
             implementation(libs.androidx.lifecycle.runtimeCompose)
-            implementation(libs.navigation.compose)
+           // implementation(libs.navigation.compose)
             
             implementation(libs.koin.core)
             implementation(libs.koin.compose)

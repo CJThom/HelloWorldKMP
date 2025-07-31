@@ -1,3 +1,6 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
+
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidKotlinMultiplatformLibrary)
@@ -13,9 +16,6 @@ kotlin {
         minSdk = libs.versions.android.minSdk.get().toInt()
     }
 
-    iosX64()
-    iosArm64()
-    iosSimulatorArm64()
     jvm()
 
     sourceSets {
@@ -24,7 +24,6 @@ kotlin {
             implementation(libs.androidx.activity.compose)
             implementation(libs.koin.android)
         }
-        
         commonMain.dependencies {
             implementation(projects.common.commonDomain)
             
@@ -44,11 +43,16 @@ kotlin {
             implementation(libs.androidx.lifecycle.viewmodelCompose)
             implementation(libs.androidx.lifecycle.runtimeCompose)
         }
-
         commonTest.dependencies {
             implementation(libs.kotlin.test)
             implementation(libs.turbine)
             implementation(libs.kotlinx.coroutines.test)
         }
+
     }
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
 }
