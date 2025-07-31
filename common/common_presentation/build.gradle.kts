@@ -1,6 +1,3 @@
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
-
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidKotlinMultiplatformLibrary)
@@ -50,9 +47,4 @@ kotlin {
         }
 
     }
-}
-
-java {
-    sourceCompatibility = JavaVersion.VERSION_11
-    targetCompatibility = JavaVersion.VERSION_11
 }
