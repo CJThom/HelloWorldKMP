@@ -6,4 +6,5 @@ import com.gpcasiapac.gpchelloworldkmp.feature.hello.domain.model.HelloMessage
 interface HelloRepository {
     suspend fun fetchHelloMessage(name: String, language: String = "en"): DataResult<HelloMessage>
     suspend fun fetchRandomGreeting(): DataResult<HelloMessage>
+    suspend fun postHelloMessage(helloMessage: HelloMessage): DataResult<HelloMessage>
 }

@@ -11,18 +11,24 @@ import com.gpcasiapac.gpchelloworldkmp.feature.hello.domain.model.HelloSessionId
 import com.gpcasiapac.gpchelloworldkmp.feature.hello.domain.usecase.GetHelloMessageUseCase
 import com.gpcasiapac.gpchelloworldkmp.feature.hello.domain.usecase.GetRandomGreetingUseCase
 import com.gpcasiapac.gpchelloworldkmp.feature.hello.domain.usecase.GetSessionIdsFlowUseCase
+import com.gpcasiapac.gpchelloworldkmp.feature.hello.presentation.mapper.toMessageState
 
 class HelloViewModel(
     private val getHelloMessageUseCase: GetHelloMessageUseCase,
     private val getRandomGreetingUseCase: GetRandomGreetingUseCase,
     private val getSessionIdsFlowUseCase: GetSessionIdsFlowUseCase
-) : MVIViewModel<HelloEvent, HelloState, HelloEffect>(),
+) : MVIViewModel<HelloScreenContract.Event, HelloScreenContract.State, HelloScreenContract.Effect>(),
     SessionHandlerDelegate<HelloSessionIds> by SessionHandler(
         initialSession = HelloSessionIds(),
         sessionFlow = getSessionIdsFlowUseCase()
     ) {
     
-    override fun setInitialState(): HelloState = HelloState()
+    override fun setInitialState(): HelloScreenContract.State = HelloScreenContract.State(
+        name = "",
+        message = null,
+        isLoading = false,
+        error = null
+    )
     
     override suspend fun awaitReadiness(): Boolean {
         val sessionIds = sessionState.first { it.userId != null && it.isAuthenticated }
@@ -39,21 +45,21 @@ class HelloViewModel(
     }
     
     // TABLE OF CONTENTS - All possible events handled here
-    override fun handleEvents(event: HelloEvent) {
+    override fun handleEvents(event: HelloScreenContract.Event) {
         when (event) {
-            is HelloEvent.UpdateName -> updateName(event.name)
-            is HelloEvent.GenerateMessage -> {
+            is HelloScreenContract.Event.UpdateName -> updateName(event.name)
+            is HelloScreenContract.Event.GenerateMessage -> {
                 viewModelScope.launch {
                     generateMessage(
                         onSuccess = { message ->
                             setState { 
                                 copy(
-                                    message = message, 
+                                    message = message.toMessageState(), 
                                     isLoading = false,
                                     error = null
                                 ) 
                             }
-                            setEffect { HelloEffect.ShowToast("Message generated successfully!") }
+                            setEffect { HelloScreenContract.Effect.ShowToast("Message generated successfully!") }
                         },
                         onError = { errorMessage ->
                             setState { 
@@ -62,23 +68,23 @@ class HelloViewModel(
                                     error = errorMessage
                                 ) 
                             }
-                            setEffect { HelloEffect.ShowError(errorMessage) }
+                            setEffect { HelloScreenContract.Effect.ShowError(errorMessage) }
                         }
                     )
                 }
             }
-            is HelloEvent.GenerateRandomGreeting -> {
+            is HelloScreenContract.Event.GenerateRandomGreeting -> {
                 viewModelScope.launch {
                     generateRandomGreeting(
                         onSuccess = { message ->
                             setState { 
                                 copy(
-                                    message = message, 
+                                    message = message.toMessageState(), 
                                     isLoading = false,
                                     error = null
                                 ) 
                             }
-                            setEffect { HelloEffect.ShowToast("Random greeting generated!") }
+                            setEffect { HelloScreenContract.Effect.ShowToast("Random greeting generated!") }
                         },
                         onError = { errorMessage ->
                             setState { 
@@ -87,12 +93,12 @@ class HelloViewModel(
                                     error = errorMessage
                                 ) 
                             }
-                            setEffect { HelloEffect.ShowError(errorMessage) }
+                            setEffect { HelloScreenContract.Effect.ShowError(errorMessage) }
                         }
                     )
                 }
             }
-            is HelloEvent.ClearMessage -> clearMessage()
+            is HelloScreenContract.Event.ClearMessage -> clearMessage()
         }
     }
     

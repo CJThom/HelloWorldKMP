@@ -7,46 +7,46 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import org.koin.compose.viewmodel.koinViewModel
-import com.gpcasiapac.gpchelloworldkmp.feature.hello.presentation.mapper.toParams
+import kotlinx.coroutines.flow.Flow
+import com.gpcasiapac.gpchelloworldkmp.feature.hello.presentation.mapper.toDetailedParams
+import com.gpcasiapac.gpchelloworldkmp.feature.hello.presentation.mapper.toSimpleParams
+import com.gpcasiapac.gpchelloworldkmp.feature.hello.presentation.model.DetailedMessageParams
+import com.gpcasiapac.gpchelloworldkmp.feature.hello.presentation.model.HelloMessageState
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HelloScreen() {
-    val viewModel = koinViewModel<HelloViewModel>()
-    val state by viewModel.viewState.collectAsState()
-    
+fun HelloScreen(
+    state: HelloScreenContract.State,
+    onEventSent: (HelloScreenContract.Event) -> Unit,
+    effectFlow: Flow<HelloScreenContract.Effect>,
+    onNavigationRequested: (HelloScreenContract.Effect.Navigation) -> Unit
+) {
     // Handle side effects
-    LaunchedEffect(viewModel.effect) {
-        viewModel.effect.collect { effect ->
+    LaunchedEffect(effectFlow) {
+        effectFlow.collect { effect ->
             when (effect) {
-                is HelloEffect.ShowToast -> {
+                is HelloScreenContract.Effect.ShowToast -> {
                     println("Toast: ${effect.message}")
                 }
-                is HelloEffect.ShowError -> {
+                is HelloScreenContract.Effect.ShowError -> {
                     println("Error: ${effect.error}")
                 }
+                is HelloScreenContract.Effect.Navigation -> onNavigationRequested(effect)
             }
         }
     }
     
-    val screenState = HelloScreenContract.State(
-        name = state.name,
-        message = state.message,
-        isLoading = state.isLoading,
-        error = state.error
-    )
-    
     HelloScreenContent(
-        viewState = screenState,
-        onEvent = viewModel::setEvent
+        viewState = state,
+        onEvent = onEventSent
     )
 }
 
 @Composable
 private fun HelloScreenContent(
     viewState: HelloScreenContract.State,
-    onEvent: (HelloEvent) -> Unit
+    onEvent: (HelloScreenContract.Event) -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -64,22 +64,22 @@ private fun HelloScreenContent(
         InputSection(
             name = viewState.name,
             isLoading = viewState.isLoading,
-            onNameChange = { onEvent(HelloEvent.UpdateName(it)) }
+            onNameChange = { onEvent(HelloScreenContract.Event.UpdateName(it)) }
         )
         
         Spacer(modifier = Modifier.height(16.dp))
         
         ActionButtons(
             isLoading = viewState.isLoading,
-            onGenerateMessage = { onEvent(HelloEvent.GenerateMessage) },
-            onGenerateRandom = { onEvent(HelloEvent.GenerateRandomGreeting) }
+            onGenerateMessage = { onEvent(HelloScreenContract.Event.GenerateMessage) },
+            onGenerateRandom = { onEvent(HelloScreenContract.Event.GenerateRandomGreeting) }
         )
         
         if (viewState.message != null || viewState.error != null) {
             Spacer(modifier = Modifier.height(16.dp))
             
             Button(
-                onClick = { onEvent(HelloEvent.ClearMessage) },
+                onClick = { onEvent(HelloScreenContract.Event.ClearMessage) },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = MaterialTheme.colorScheme.secondary
                 )
@@ -149,25 +149,83 @@ private fun ActionButtons(
 
 @Composable
 private fun ResultSection(
-    message: com.gpcasiapac.gpchelloworldkmp.feature.hello.domain.model.HelloMessage?,
-    error: String?
+    message: HelloMessageState?,
+    error: String?,
+    modifier: Modifier = Modifier
 ) {
-    message?.let { helloMessage ->
-        val messageParams = helloMessage.toParams()
-        HelloMessageCard(messageParams = messageParams)
-    }
-    
-    error?.let { errorMessage ->
-        ErrorCard(error = errorMessage)
+    Column(
+        modifier = modifier,
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        message?.let { messageState ->
+            // Simple component with direct parameters (≤3 params) - direct from State
+            SimpleMessageCard(
+                text = messageState.text,
+                language = messageState.language,
+                formattedTimestamp = messageState.formattedTimestamp
+            )
+            
+            // Detailed component with params class (4+ params) - State → Params flow
+            val detailedParams = messageState.toDetailedParams(System.currentTimeMillis())
+            DetailedMessageCard(messageParams = detailedParams)
+        }
+        
+        error?.let { errorMessage ->
+            ErrorCard(error = errorMessage)
+        }
     }
 }
 
 @Composable
-fun HelloMessageCard(
-    messageParams: com.gpcasiapac.gpchelloworldkmp.feature.hello.presentation.model.HelloMessageParams
+fun SimpleMessageCard(
+    text: String,
+    language: String,
+    formattedTimestamp: String,
+    modifier: Modifier = Modifier
 ) {
     Card(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = modifier.fillMaxWidth(),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.secondaryContainer
+        )
+    ) {
+        Column(
+            modifier = Modifier.padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = "Simple Card (≤3 params) - direct params",
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.6f)
+            )
+            
+            Spacer(modifier = Modifier.height(4.dp))
+            
+            Text(
+                text = text,
+                style = MaterialTheme.typography.headlineSmall,
+                textAlign = TextAlign.Center,
+                color = MaterialTheme.colorScheme.onSecondaryContainer
+            )
+            
+            Spacer(modifier = Modifier.height(8.dp))
+            
+            Text(
+                text = "Language: $language • Time: $formattedTimestamp",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.7f)
+            )
+        }
+    }
+}
+
+@Composable
+fun DetailedMessageCard(
+    messageParams: DetailedMessageParams,
+    modifier: Modifier = Modifier
+) {
+    Card(
+        modifier = modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.primaryContainer
         )
@@ -176,6 +234,14 @@ fun HelloMessageCard(
             modifier = Modifier.padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            Text(
+                text = "Detailed Card (4+ params)",
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.6f)
+            )
+            
+            Spacer(modifier = Modifier.height(4.dp))
+            
             Text(
                 text = messageParams.text,
                 style = MaterialTheme.typography.headlineMedium,
@@ -190,14 +256,25 @@ fun HelloMessageCard(
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.7f)
             )
+            
+            Spacer(modifier = Modifier.height(4.dp))
+            
+            Text(
+                text = "ID: ${messageParams.messageId} • User: ${if (messageParams.isFromCurrentUser) "You" else "Other"}",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.5f)
+            )
         }
     }
 }
 
 @Composable
-fun ErrorCard(error: String) {
+fun ErrorCard(
+    error: String,
+    modifier: Modifier = Modifier
+) {
     Card(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.errorContainer
         )

@@ -66,4 +66,39 @@ class HelloNetworkDataSourceImpl : HelloNetworkDataSource {
             )
         }
     }
+    
+    override suspend fun postHelloMessage(helloMessageDto: HelloMessageDto): DataResult<HelloMessageDto> {
+        return try {
+            // Simulate network delay for POST request
+            delay(1200)
+            
+            // Simulate validation - reject messages that are too short
+            if (helloMessageDto.message.length < 3) {
+                return DataResult.Error.Network.HttpError(
+                    code = 400,
+                    message = "Bad Request: Message is too short. Minimum 3 characters required."
+                )
+            }
+            
+            // Simulate server error for specific test case
+            if (helloMessageDto.message.lowercase().contains("servererror")) {
+                return DataResult.Error.Network.HttpError(
+                    code = 500,
+                    message = "Internal Server Error: Failed to process hello message"
+                )
+            }
+            
+            // Simulate successful POST - return the message with updated timestamp
+            val postedMessage = helloMessageDto.copy(
+                timestamp = System.currentTimeMillis()
+            )
+            
+            DataResult.Success(postedMessage)
+        } catch (e: Exception) {
+            DataResult.Error.Network.UnknownError(
+                throwable = e,
+                message = "Failed to post hello message: ${e.message}"
+            )
+        }
+    }
 }

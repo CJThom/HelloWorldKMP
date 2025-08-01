@@ -23,6 +23,7 @@ kotlin {
             implementation(libs.kotlinx.serialization.json)
             implementation(libs.kotlinx.datetime)
             implementation(libs.kermit)
+            implementation(libs.koin.core)
         }
 
         commonTest.dependencies {
