@@ -6,5 +6,5 @@ import com.gpcasiapac.gpchelloworldkmp.feature.hello.presentation.hello_screen.H
 
 val helloPresentationModule = module {
     // ViewModels
-    viewModel { HelloViewModel(get(), get(), get()) }
+    viewModel { HelloViewModel(get(), get(), get(), get()) }
 }

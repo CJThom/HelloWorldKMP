@@ -11,12 +11,14 @@ import com.gpcasiapac.gpchelloworldkmp.feature.hello.domain.model.HelloSessionId
 import com.gpcasiapac.gpchelloworldkmp.feature.hello.domain.usecase.GetHelloMessageUseCase
 import com.gpcasiapac.gpchelloworldkmp.feature.hello.domain.usecase.GetRandomGreetingUseCase
 import com.gpcasiapac.gpchelloworldkmp.feature.hello.domain.usecase.GetSessionIdsFlowUseCase
+import com.gpcasiapac.gpchelloworldkmp.feature.hello.domain.usecase.ObservePeriodicGreetingsUseCase
 import com.gpcasiapac.gpchelloworldkmp.feature.hello.presentation.mapper.toState
 
 class HelloViewModel(
     private val getHelloMessageUseCase: GetHelloMessageUseCase,
     private val getRandomGreetingUseCase: GetRandomGreetingUseCase,
-    private val getSessionIdsFlowUseCase: GetSessionIdsFlowUseCase
+    private val getSessionIdsFlowUseCase: GetSessionIdsFlowUseCase,
+    private val observePeriodicGreetingsUseCase: ObservePeriodicGreetingsUseCase
 ) : MVIViewModel<HelloScreenContract.Event, HelloScreenContract.State, HelloScreenContract.Effect>(),
     SessionHandlerDelegate<HelloSessionIds> by SessionHandler(
         initialSession = HelloSessionIds(),
@@ -42,6 +44,14 @@ class HelloViewModel(
     override fun onStart() {
         // Initialize any startup logic here
         // Session is guaranteed to be ready when this is called
+        
+        viewModelScope.launch {
+            observePeriodicGreetings(
+                onGreetingReceived = {
+                    setEffect { HelloScreenContract.Effect.ShowToast("New greeting received!") }
+                }
+            )
+        }
     }
     
     // TABLE OF CONTENTS - All possible events handled here
@@ -51,23 +61,10 @@ class HelloViewModel(
             is HelloScreenContract.Event.GenerateMessage -> {
                 viewModelScope.launch {
                     generateMessage(
-                        onSuccess = { message ->
-                            setState { 
-                                copy(
-                                    helloMessageState = message.toState(),
-                                    isLoading = false,
-                                    error = null
-                                ) 
-                            }
+                        onSuccess = {
                             setEffect { HelloScreenContract.Effect.ShowToast("Message generated successfully!") }
                         },
                         onError = { errorMessage ->
-                            setState { 
-                                copy(
-                                    isLoading = false, 
-                                    error = errorMessage
-                                ) 
-                            }
                             setEffect { HelloScreenContract.Effect.ShowError(errorMessage) }
                         }
                     )
@@ -76,23 +73,10 @@ class HelloViewModel(
             is HelloScreenContract.Event.GenerateRandomGreeting -> {
                 viewModelScope.launch {
                     generateRandomGreeting(
-                        onSuccess = { message ->
-                            setState { 
-                                copy(
-                                    helloMessageState = message.toState(),
-                                    isLoading = false,
-                                    error = null
-                                ) 
-                            }
+                        onSuccess = {
                             setEffect { HelloScreenContract.Effect.ShowToast("Random greeting generated!") }
                         },
                         onError = { errorMessage ->
-                            setState { 
-                                copy(
-                                    isLoading = false, 
-                                    error = errorMessage
-                                ) 
-                            }
                             setEffect { HelloScreenContract.Effect.ShowError(errorMessage) }
                         }
                     )
@@ -102,37 +86,77 @@ class HelloViewModel(
         }
     }
     
+    private suspend fun observePeriodicGreetings(
+        onGreetingReceived: () -> Unit
+    ) {
+        observePeriodicGreetingsUseCase().collect { helloMessage ->
+            setState {
+                copy(
+                    helloMessageState = helloMessage.toState(),
+                    error = null
+                )
+            }
+            onGreetingReceived()
+        }
+    }
+    
     private fun updateName(name: String) {
         setState { copy(name = name, error = null) }
     }
     
     private suspend fun generateMessage(
-        onSuccess: (HelloMessage) -> Unit,
+        onSuccess: () -> Unit,
         onError: (String) -> Unit
     ) {
         setState { copy(isLoading = true, error = null) }
         
         when (val result = getHelloMessageUseCase(viewState.value.name)) {
             is GetHelloMessageUseCase.UseCaseResult.Success -> {
-                onSuccess(result.helloMessage)
+                setState { 
+                    copy(
+                        helloMessageState = result.helloMessage.toState(),
+                        isLoading = false,
+                        error = null
+                    ) 
+                }
+                onSuccess()
             }
             is GetHelloMessageUseCase.UseCaseResult.Error -> {
+                setState { 
+                    copy(
+                        isLoading = false, 
+                        error = result.message
+                    ) 
+                }
                 onError(result.message)
             }
         }
     }
     
     private suspend fun generateRandomGreeting(
-        onSuccess: (HelloMessage) -> Unit,
+        onSuccess: () -> Unit,
         onError: (String) -> Unit
     ) {
         setState { copy(isLoading = true, error = null) }
         
         when (val result = getRandomGreetingUseCase()) {
             is GetRandomGreetingUseCase.UseCaseResult.Success -> {
-                onSuccess(result.helloMessage)
+                setState { 
+                    copy(
+                        helloMessageState = result.helloMessage.toState(),
+                        isLoading = false,
+                        error = null
+                    ) 
+                }
+                onSuccess()
             }
             is GetRandomGreetingUseCase.UseCaseResult.Error -> {
+                setState { 
+                    copy(
+                        isLoading = false, 
+                        error = result.message
+                    ) 
+                }
                 onError(result.message)
             }
         }
