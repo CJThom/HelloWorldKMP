@@ -8,5 +8,5 @@ data class HelloMessageParams(
     val language: String,
     val formattedTimestamp: String,
     val messageId: String,
-    val isFromCurrentUser: Boolean = false
+    val isFromCurrentUser: Boolean
 )
