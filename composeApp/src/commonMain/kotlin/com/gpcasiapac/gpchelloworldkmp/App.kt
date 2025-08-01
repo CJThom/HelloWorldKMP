@@ -7,7 +7,7 @@ import org.koin.compose.KoinApplication
 import com.gpcasiapac.gpchelloworldkmp.feature.hello.data.di.helloDataModule
 import com.gpcasiapac.gpchelloworldkmp.feature.hello.domain.di.helloDomainModule
 import com.gpcasiapac.gpchelloworldkmp.feature.hello.presentation.di.helloPresentationModule
-import com.gpcasiapac.gpchelloworldkmp.feature.hello.presentation.HelloDestination
+import com.gpcasiapac.gpchelloworldkmp.feature.hello.presentation.hello_screen.HelloDestination
 
 @Composable
 @Preview

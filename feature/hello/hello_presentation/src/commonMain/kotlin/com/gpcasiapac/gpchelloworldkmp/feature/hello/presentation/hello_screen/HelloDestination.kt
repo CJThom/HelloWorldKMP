@@ -1,4 +1,4 @@
-package com.gpcasiapac.gpchelloworldkmp.feature.hello.presentation
+package com.gpcasiapac.gpchelloworldkmp.feature.hello.presentation.hello_screen
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState

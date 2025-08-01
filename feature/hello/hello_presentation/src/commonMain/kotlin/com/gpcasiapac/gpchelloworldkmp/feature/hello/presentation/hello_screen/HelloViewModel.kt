@@ -1,4 +1,4 @@
-package com.gpcasiapac.gpchelloworldkmp.feature.hello.presentation
+package com.gpcasiapac.gpchelloworldkmp.feature.hello.presentation.hello_screen
 
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.first
@@ -11,7 +11,7 @@ import com.gpcasiapac.gpchelloworldkmp.feature.hello.domain.model.HelloSessionId
 import com.gpcasiapac.gpchelloworldkmp.feature.hello.domain.usecase.GetHelloMessageUseCase
 import com.gpcasiapac.gpchelloworldkmp.feature.hello.domain.usecase.GetRandomGreetingUseCase
 import com.gpcasiapac.gpchelloworldkmp.feature.hello.domain.usecase.GetSessionIdsFlowUseCase
-import com.gpcasiapac.gpchelloworldkmp.feature.hello.presentation.mapper.toMessageState
+import com.gpcasiapac.gpchelloworldkmp.feature.hello.presentation.mapper.toState
 
 class HelloViewModel(
     private val getHelloMessageUseCase: GetHelloMessageUseCase,
@@ -25,7 +25,7 @@ class HelloViewModel(
     
     override fun setInitialState(): HelloScreenContract.State = HelloScreenContract.State(
         name = "",
-        message = null,
+        helloMessageState = null,
         isLoading = false,
         error = null
     )
@@ -54,7 +54,7 @@ class HelloViewModel(
                         onSuccess = { message ->
                             setState { 
                                 copy(
-                                    message = message.toMessageState(), 
+                                    helloMessageState = message.toState(),
                                     isLoading = false,
                                     error = null
                                 ) 
@@ -79,7 +79,7 @@ class HelloViewModel(
                         onSuccess = { message ->
                             setState { 
                                 copy(
-                                    message = message.toMessageState(), 
+                                    helloMessageState = message.toState(),
                                     isLoading = false,
                                     error = null
                                 ) 
@@ -139,6 +139,6 @@ class HelloViewModel(
     }
     
     private fun clearMessage() {
-        setState { copy(message = null, error = null) }
+        setState { copy(helloMessageState = null, error = null) }
     }
 }
