@@ -13,6 +13,7 @@ plugins {
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.composeHotReload)
+    alias(libs.plugins.kotlinSerialization)
 }
 
 kotlin {
@@ -29,6 +30,12 @@ kotlin {
         androidMain.dependencies {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
+            // Navigation 3 dependencies for Android only
+
+            implementation(libs.androidx.navigation3.ui)
+            implementation(libs.androidx.material3.adaptive.navigation3)
+            implementation(libs.androidx.lifecycle.viewmodel.navigation3)
+            implementation(libs.androidx.navigation3.runtime)
         }
         commonMain.dependencies {
             implementation(projects.config)
@@ -56,6 +63,10 @@ kotlin {
             implementation(libs.androidx.lifecycle.runtimeCompose)
 
             implementation(libs.koin.compose)
+
+            implementation(libs.navigation.compose)
+            
+            implementation(libs.kotlinx.serialization.core)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

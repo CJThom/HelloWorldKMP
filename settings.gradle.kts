@@ -12,11 +12,23 @@ pluginManagement {
         }
         mavenCentral()
         gradlePluginPortal()
+        maven {
+            url = uri("https://androidx.dev/snapshots/builds/13556278/artifacts/repository")
+        }
     }
 }
 
 dependencyResolutionManagement {
     repositories {
+        // Add AndroidX snapshot repository for Navigation 3 alpha
+       // maven { setUrl("https://ci.android.com/builds/submitted/13556278/androidx_snapshot/latest/raw/repository/") }
+        maven {
+            url = uri("https://androidx.dev/snapshots/builds/13556278/artifacts/repository")
+        }
+     //   maven { setUrl("https://ci.android.com/builds/submitted/13876626/androidx_snapshot/latest/raw/repository/androidx/compose/material3/adaptive/adaptive-navigation3-android") }
+
+//        androidx/compose/material3/adaptive/adaptive-navigation3-android
+      //  maven(url = "https://androidx.dev/snapshots/builds/13551459/artifacts/repository")
         google {
             mavenContent {
                 includeGroupAndSubgroups("androidx")
