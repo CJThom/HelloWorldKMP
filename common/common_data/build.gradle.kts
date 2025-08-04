@@ -14,6 +14,7 @@ kotlin {
     jvm()
     sourceSets {
         commonMain.dependencies {
+            implementation(projects.config)
             implementation(projects.common.commonDomain)
             
             implementation(libs.kotlinx.coroutines.core)
@@ -21,6 +22,22 @@ kotlin {
             implementation(libs.kotlinx.datetime)
             implementation(libs.kermit)
             implementation(libs.koin.core)
+            
+            // Ktor client dependencies
+            implementation(libs.ktor.client.core)
+            implementation(libs.ktor.client.content.negotiation)
+            implementation(libs.ktor.client.logging)
+            implementation(libs.ktor.client.resources)
+            implementation(libs.ktor.client.websockets)
+            implementation(libs.ktor.serialization.kotlinx.json)
+        }
+
+        androidMain.dependencies {
+            implementation(libs.ktor.client.android)
+        }
+
+        jvmMain.dependencies {
+            implementation(libs.ktor.client.cio)
         }
 
         commonTest.dependencies {

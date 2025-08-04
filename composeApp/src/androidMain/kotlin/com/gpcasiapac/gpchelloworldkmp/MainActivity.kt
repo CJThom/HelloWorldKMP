@@ -11,7 +11,8 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
-
+        
+        // Koin is now initialized in the Compose layer via KoinMultiplatformApplication
         setContent {
             App()
         }

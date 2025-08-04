@@ -15,6 +15,8 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
+            implementation(projects.config)
+            
             implementation(projects.common.commonData)
             implementation(projects.common.commonDomain)
 
@@ -24,6 +26,9 @@ kotlin {
             implementation(libs.kotlinx.coroutines.core)
             implementation(libs.kermit)
             implementation(libs.koin.core)
+            
+            // Basic Ktor client dependencies for HelloNetworkDataSourceImpl
+            implementation(libs.ktor.client.core)
         }
 
         commonTest.dependencies {

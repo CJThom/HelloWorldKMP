@@ -31,6 +31,8 @@ kotlin {
             implementation(libs.androidx.activity.compose)
         }
         commonMain.dependencies {
+            implementation(projects.config)
+            
             implementation(projects.common.commonData)
             implementation(projects.common.commonDomain)
             implementation(projects.common.commonPresentation)
@@ -81,9 +83,19 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+    buildFeatures {
+        buildConfig = true
+    }
     buildTypes {
+        getByName("debug") {
+            // Configuration now comes from environment-specific properties in config module
+        }
         getByName("release") {
             isMinifyEnabled = false
+            // Configuration now comes from environment-specific properties in config module
+        }
+        create("staging") {
+            // Configuration now comes from environment-specific properties in config module
         }
     }
     compileOptions {

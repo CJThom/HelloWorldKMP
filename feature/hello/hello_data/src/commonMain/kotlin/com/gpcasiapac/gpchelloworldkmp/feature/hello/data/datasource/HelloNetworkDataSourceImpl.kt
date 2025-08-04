@@ -1,104 +1,130 @@
 package com.gpcasiapac.gpchelloworldkmp.feature.hello.data.datasource
 
 import kotlinx.coroutines.delay
+import kotlinx.serialization.Serializable
 import com.gpcasiapac.gpchelloworldkmp.common.domain.DataResult
 import com.gpcasiapac.gpchelloworldkmp.feature.hello.data.dto.HelloMessageDto
+import com.gpcasiapac.gpchelloworldkmp.config.BuildConfig
+import io.ktor.client.*
+import io.ktor.client.call.*
+import io.ktor.client.request.*
+import io.ktor.client.statement.*
+import io.ktor.http.*
 
-class HelloNetworkDataSourceImpl : HelloNetworkDataSource {
+@Serializable
+data class HelloMessageRequest(
+    val name: String,
+    val language: String
+)
+
+@Serializable
+data class PostMessageRequest(
+    val message: String,
+    val language: String
+)
+
+@Serializable
+data class ApiResponse<T>(
+    val success: Boolean,
+    val data: T? = null,
+    val error: String? = null,
+    val code: Int? = null
+)
+
+class HelloNetworkDataSourceImpl(
+    private val httpClient: HttpClient
+) : HelloNetworkDataSource {
     
-    private val greetings = listOf(
-        "Hello", "Hi", "Hey", "Greetings", "Welcome", 
-        "Good day", "Howdy", "Salutations"
-    )
+    companion object {
+        private const val API_PATH = "/api/v1"
+        private const val HELLO_ENDPOINT = "$API_PATH/hello"
+        private const val RANDOM_GREETING_ENDPOINT = "$API_PATH/greetings/random"
+        private const val POST_MESSAGE_ENDPOINT = "$API_PATH/messages"
+    }
     
-    override suspend fun getHelloMessageDto(name: String, language: String): DataResult<HelloMessageDto> {
+    
+    // Real HTTP client implementation using Ktor
+    private suspend fun makeHttpRequest(
+        endpoint: String,
+        method: String = "GET",
+        body: Any? = null
+    ): DataResult<HelloMessageDto> {
         return try {
-            // Simulate network delay
-            delay(1000)
-            
-            // Simulate occasional network errors for demo
-            if (name.lowercase() == "error") {
-                return DataResult.Error.Network.ConnectionError(
-                    message = "Failed to connect to greeting service"
-                )
+            val response = when (method.uppercase()) {
+                "GET" -> httpClient.get(endpoint)
+                "POST" -> httpClient.post(endpoint) {
+                    contentType(ContentType.Application.Json)
+                    if (body != null) {
+                        setBody(body)
+                    }
+                }
+                else -> throw IllegalArgumentException("Unsupported HTTP method: $method")
             }
             
-            val message = when (language) {
-                "es" -> "¡Hola, $name! ¡Bienvenido a KMP!"
-                "fr" -> "Bonjour, $name! Bienvenue à KMP!"
-                "de" -> "Hallo, $name! Willkommen bei KMP!"
-                else -> "Hello, $name! Welcome to KMP!"
+            when (response.status) {
+                HttpStatusCode.OK -> {
+                    val responseBody = response.body<HelloMessageDto>()
+                    DataResult.Success(responseBody)
+                }
+                HttpStatusCode.BadRequest -> {
+                    DataResult.Error.Network.HttpError(
+                        code = response.status.value,
+                        message = "Bad Request: ${response.bodyAsText()}"
+                    )
+                }
+                HttpStatusCode.InternalServerError -> {
+                    DataResult.Error.Network.HttpError(
+                        code = response.status.value,
+                        message = "Internal Server Error: ${response.bodyAsText()}"
+                    )
+                }
+                else -> {
+                    DataResult.Error.Network.HttpError(
+                        code = response.status.value,
+                        message = "HTTP Error: ${response.status.description}"
+                    )
+                }
             }
-            
-            DataResult.Success(
-                HelloMessageDto(
-                    message = message,
-                    timestamp = System.currentTimeMillis(),
-                    language = language
-                )
-            )
         } catch (e: Exception) {
             DataResult.Error.Network.UnknownError(
                 throwable = e,
-                message = "Unexpected error occurred: ${e.message}"
+                message = "Network request failed: ${e.message}"
             )
         }
+    }
+    
+    override suspend fun getHelloMessageDto(name: String, language: String): DataResult<HelloMessageDto> {
+        // Simulate error trigger for demo purposes
+        if (name.lowercase() == "error") {
+            return DataResult.Error.Network.ConnectionError(
+                message = "Failed to connect to greeting service"
+            )
+        }
+        
+        val request = HelloMessageRequest(name = name, language = language)
+        return makeHttpRequest(
+            endpoint = HELLO_ENDPOINT,
+            method = "POST",
+            body = request
+        )
     }
     
     override suspend fun getRandomGreetingDto(): DataResult<HelloMessageDto> {
-        return try {
-            delay(800)
-            
-            val randomGreeting = greetings.random()
-            val message = "$randomGreeting from KMP!"
-            
-            DataResult.Success(
-                HelloMessageDto(
-                    message = message,
-                    timestamp = System.currentTimeMillis(),
-                    language = "en"
-                )
-            )
-        } catch (e: Exception) {
-            DataResult.Error.Network.UnknownError(
-                throwable = e,
-                message = "Failed to fetch random greeting: ${e.message}"
-            )
-        }
+        return makeHttpRequest(
+            endpoint = RANDOM_GREETING_ENDPOINT,
+            method = "GET"
+        )
     }
     
     override suspend fun postHelloMessage(helloMessageDto: HelloMessageDto): DataResult<HelloMessageDto> {
-        return try {
-            // Simulate network delay for POST request
-            delay(1200)
-            
-            // Simulate validation - reject messages that are too short
-            if (helloMessageDto.message.length < 3) {
-                return DataResult.Error.Network.HttpError(
-                    code = 400,
-                    message = "Bad Request: Message is too short. Minimum 3 characters required."
-                )
-            }
-            
-            // Simulate server error for specific test case
-            if (helloMessageDto.message.lowercase().contains("servererror")) {
-                return DataResult.Error.Network.HttpError(
-                    code = 500,
-                    message = "Internal Server Error: Failed to process hello message"
-                )
-            }
-            
-            // Simulate successful POST - return the message with updated timestamp
-            val postedMessage = helloMessageDto.copy(
-                timestamp = System.currentTimeMillis()
-            )
-            
-            DataResult.Success(postedMessage)
-        } catch (e: Exception) {
-            DataResult.Error.Network.UnknownError(
-                throwable = e,
-                message = "Failed to post hello message: ${e.message}"
-            )
-        }
+        val request = PostMessageRequest(
+            message = helloMessageDto.message,
+            language = helloMessageDto.language
+        )
+        return makeHttpRequest(
+            endpoint = POST_MESSAGE_ENDPOINT,
+            method = "POST",
+            body = request
+        )
     }
 }
