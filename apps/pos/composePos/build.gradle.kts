@@ -40,6 +40,7 @@ kotlin {
         commonMain.dependencies {
             implementation(projects.config)
             
+            // Shared dependencies
             implementation(projects.shared.common.commonData)
             implementation(projects.shared.common.commonDomain)
             implementation(projects.shared.common.commonPresentation)
@@ -55,6 +56,12 @@ kotlin {
             implementation(projects.shared.features.login.loginData)
             implementation(projects.shared.features.login.loginDomain)
             implementation(projects.shared.features.login.loginPresentation)
+
+            // POS-specific dependencies
+            implementation(projects.apps.pos.posCore.posCoreDomain)
+            implementation(projects.apps.pos.posCore.posCoreData)
+
+            implementation(projects.apps.pos.posFeatures.cart.cartDomain)
 
 
             implementation(compose.runtime)

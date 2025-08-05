@@ -1,0 +1,63 @@
+{
+  "helloMessages": [
+    {
+      "language": "en",
+      "messageTemplate": "Hello, {name}! Welcome to KMP!",
+      "responses": [
+        "Hello from KMP!",
+        "Hi from KMP!",
+        "Greetings from KMP!"
+      ]
+    },
+    {
+      "language": "es",
+      "messageTemplate": "¡Hola, {name}! ¡Bienvenido a KMP!",
+      "responses": [
+        "¡Hola desde KMP!",
+        "¡Saludos desde KMP!"
+      ]
+    },
+    {
+      "language": "fr",
+      "messageTemplate": "Bonjour, {name}! Bienvenue à KMP!",
+      "responses": [
+        "Bonjour depuis KMP!",
+        "Salutations depuis KMP!"
+      ]
+    },
+    {
+      "language": "de",
+      "messageTemplate": "Hallo, {name}! Willkommen bei KMP!",
+      "responses": [
+        "Hallo von KMP!",
+        "Grüße von KMP!"
+      ]
+    }
+  ],
+  "randomGreetings": [
+    "Welcome to Hello World KMP!",
+    "Hope you're having a great day!",
+    "Keep coding and stay awesome!",
+    "Kotlin Multiplatform is amazing!",
+    "Thanks for using our app!",
+    "Hello from the mock data source!",
+    "Greetings from JSON!",
+    "Mock data is working perfectly!"
+  ],
+  "errors": {
+    "networkError": {
+      "trigger": "error",
+      "message": "Simulated network error from mock data"
+    },
+    "serverError": {
+      "trigger": "servererror",
+      "code": 500,
+      "message": "Simulated server error from mock data"
+    },
+    "validationError": {
+      "trigger": "short",
+      "code": 400,
+      "message": "Bad Request: Message is too short. Minimum 3 characters required."
+    }
+  }
+}

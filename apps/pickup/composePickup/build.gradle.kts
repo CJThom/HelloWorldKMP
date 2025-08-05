@@ -40,6 +40,7 @@ kotlin {
         commonMain.dependencies {
             implementation(projects.config)
             
+            // Shared dependencies
             implementation(projects.shared.common.commonData)
             implementation(projects.shared.common.commonDomain)
             implementation(projects.shared.common.commonPresentation)
@@ -55,6 +56,12 @@ kotlin {
             implementation(projects.shared.features.login.loginData)
             implementation(projects.shared.features.login.loginDomain)
             implementation(projects.shared.features.login.loginPresentation)
+
+            // Pickup-specific dependencies
+            implementation(projects.apps.pickup.pickupCore.pickupCoreDomain)
+            implementation(projects.apps.pickup.pickupCore.pickupCoreData)
+
+            implementation(projects.apps.pickup.pickupFeatures.orders.ordersDomain)
 
 
             implementation(compose.runtime)
