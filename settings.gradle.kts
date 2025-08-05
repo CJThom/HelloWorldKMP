@@ -51,7 +51,7 @@ include(":config")
 include(":composeApp")
 
 
-// Shared modules (used by all apps)
+// Shared modules (used by all app)
 include(":shared:common:common_data")
 include(":shared:common:common_domain")
 include(":shared:common:common_presentation")
@@ -69,17 +69,17 @@ include(":shared:features:hello:hello_domain")
 include(":shared:features:hello:hello_presentation")
 
 // Pickup app modules
-include(":apps:pickup:pickup_core:pickup_core_domain")
-include(":apps:pickup:pickup_core:pickup_core_data")
+include(":app:pickup:pickup_core:pickup_core_domain")
+include(":app:pickup:pickup_core:pickup_core_data")
 
-include(":apps:pickup:pickup_features:orders:orders_domain")
+include(":app:pickup:pickup_features:orders:orders_domain")
 
-include(":apps:pickup:composePickup")
+include(":app:pickup:composePickup")
 
 // POS app modules
-include(":apps:pos:pos_core:pos_core_domain")
-include(":apps:pos:pos_core:pos_core_data")
+include(":app:pos:pos_core:pos_core_domain")
+include(":app:pos:pos_core:pos_core_data")
 
-include(":apps:pos:pos_features:cart:cart_domain")
+include(":app:pos:pos_features:cart:cart_domain")
 
-include(":apps:pos:composePos")
+include(":app:pos:composePos")

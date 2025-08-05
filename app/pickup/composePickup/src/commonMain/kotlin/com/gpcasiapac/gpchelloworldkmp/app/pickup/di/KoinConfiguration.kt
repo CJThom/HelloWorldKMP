@@ -1,4 +1,4 @@
-package com.gpcasiapac.gpchelloworldkmp.di
+package com.gpcasiapac.gpchelloworldkmp.app.pickup.di
 
 import org.koin.dsl.koinConfiguration
 import com.gpcasiapac.gpchelloworldkmp.common.data.di.commonDataModules
