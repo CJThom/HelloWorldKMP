@@ -1,46 +1,79 @@
 package com.gpcasiapac.gpchelloworldkmp.navigation
 
-import androidx.compose.runtime.Composable
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.LocalShipping
+import androidx.compose.material.icons.filled.ShoppingCart
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Modifier
 import androidx.navigation3.runtime.entry
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.ui.NavDisplay
-import com.gpcasiapac.gpchelloworldkmp.presentation.login.LoginScreen
-import com.gpcasiapac.gpchelloworldkmp.feature.hello.presentation.hello_screen.HelloDestination
-
-// Extension functions to convert type-safe keys to string routes
-private fun AndroidAppScreen.toRoute(): String = when (this) {
-    AndroidAppScreen.Login -> "android_login"
-    AndroidAppScreen.HelloWorld -> "android_hello_world"
-}
-
+import com.gpcasiapac.gpchelloworldkmp.feature.login.presentation.login_screen.LoginDestination
+import com.gpcasiapac.gpchelloworldkmp.feature.login.presentation.login_screen.LoginScreenContract
+import com.gpcasiapac.gpchelloworldkmp.presentation.orders.OrdersScreen
+import com.gpcasiapac.gpchelloworldkmp.presentation.cart.CartScreen
 
 @Composable
 fun AndroidAppNavigation() {
-    // 6-a  create & remember the back-stack, starting on Login
     val backStack = rememberNavBackStack<AndroidAppScreen>(AndroidAppScreen.Login)
 
-    // 6-b  render the current entry
     NavDisplay(
         backStack = backStack,
-        onBack = { backStack.removeLastOrNull() },      // system back
+        onBack = { backStack.removeLastOrNull() },
         entryProvider = entryProvider {
             entry<AndroidAppScreen.Login> {
-                LoginScreen { backStack.add(AndroidAppScreen.HelloWorld) }
-            }
-            entry<AndroidAppScreen.HelloWorld> {
-                HelloDestination(
+                LoginDestination(
                     onNavigationRequested = { navigationEffect ->
-                        // Handle any navigation effects from HelloScreen
-                        // For now, we'll just ignore them since HelloScreen doesn't navigate anywhere
+                        when (navigationEffect) {
+                            is LoginScreenContract.Effect.Navigation.NavigateToHome -> {
+                                backStack.add(AndroidAppScreen.MainApp)
+                            }
+                        }
                     }
                 )
             }
+            
+            entry<AndroidAppScreen.MainApp> {
+                AndroidMainAppWithBottomNav()
+            }
         }
     )
+}
+
+@Composable
+private fun AndroidMainAppWithBottomNav() {
+    var selectedTab by remember { mutableStateOf<MainAppTab>(MainAppTab.Pos) } // POS is default
+    
+    Scaffold(
+        bottomBar = {
+            NavigationBar {
+                NavigationBarItem(
+                    icon = { Icon(Icons.Default.ShoppingCart, contentDescription = null) },
+                    label = { Text("POS") },
+                    selected = selectedTab == MainAppTab.Pos,
+                    onClick = { selectedTab = MainAppTab.Pos }
+                )
+                NavigationBarItem(
+                    icon = { Icon(Icons.Default.LocalShipping, contentDescription = null) },
+                    label = { Text("Pickup") },
+                    selected = selectedTab == MainAppTab.Pickup,
+                    onClick = { selectedTab = MainAppTab.Pickup }
+                )
+            }
+        }
+    ) { paddingValues ->
+        when (selectedTab) {
+            MainAppTab.Pos -> {
+                CartScreen(modifier = Modifier.padding(paddingValues))
+            }
+            MainAppTab.Pickup -> {
+                OrdersScreen(modifier = Modifier.padding(paddingValues))
+            }
+        }
+    }
 }
 
 //@Composable

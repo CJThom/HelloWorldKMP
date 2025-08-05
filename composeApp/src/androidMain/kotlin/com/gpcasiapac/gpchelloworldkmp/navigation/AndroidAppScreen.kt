@@ -9,5 +9,5 @@ sealed interface AndroidAppScreen : NavKey {
     data object Login : AndroidAppScreen
     
     @Serializable 
-    data object HelloWorld : AndroidAppScreen
+    data object MainApp : AndroidAppScreen
 }

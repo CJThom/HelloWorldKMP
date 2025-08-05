@@ -5,12 +5,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
-import com.gpcasiapac.gpchelloworldkmp.presentation.login.LoginScreen
-import com.gpcasiapac.gpchelloworldkmp.feature.hello.presentation.hello_screen.HelloDestination
+import com.gpcasiapac.gpchelloworldkmp.feature.login.presentation.login_screen.LoginDestination
+import com.gpcasiapac.gpchelloworldkmp.feature.login.presentation.login_screen.LoginScreenContract
+import com.gpcasiapac.gpchelloworldkmp.presentation.orders.OrdersScreen
 
 sealed class Screen {
     object Login : Screen()
-    object Hello : Screen()
+    object Orders : Screen()
 }
 
 @Composable
@@ -19,20 +20,19 @@ fun AppNavigation() {
 
     when (currentScreen) {
         Screen.Login -> {
-            LoginScreen(
-                onLoginClick = {
-                    currentScreen = Screen.Hello
+            LoginDestination(
+                onNavigationRequested = { navigationEffect ->
+                    when (navigationEffect) {
+                        is LoginScreenContract.Effect.Navigation.NavigateToHome -> {
+                            currentScreen = Screen.Orders
+                        }
+                    }
                 }
             )
         }
         
-        Screen.Hello -> {
-            HelloDestination(
-                onNavigationRequested = { navigationEffect ->
-                    // Handle any navigation effects from HelloScreen
-                    // For now, we'll just ignore them since HelloScreen doesn't navigate anywhere
-                }
-            )
+        Screen.Orders -> {
+            OrdersScreen()
         }
     }
 }
