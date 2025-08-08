@@ -63,6 +63,13 @@ include(":shared:core:core_presentation")
 include(":shared:features:login:login_data")
 include(":shared:features:login:login_domain")
 include(":shared:features:login:login_presentation")
+// New API/Impl layers for Login
+include(":shared:features:login:login_api")
+include(":shared:features:login:login_impl")
+
+// POS Cart feature modules
+include(":app:pos:pos_features:cart:cart_api")
+include(":app:pos:pos_features:cart:cart_impl")
 
 include(":shared:features:hello:hello_data")
 include(":shared:features:hello:hello_domain")

@@ -7,10 +7,11 @@ import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import com.gpcasiapac.gpchelloworldkmp.feature.login.presentation.login_screen.LoginDestination
 import com.gpcasiapac.gpchelloworldkmp.feature.login.presentation.login_screen.LoginScreenContract
+import com.gpcasiapac.gpchelloworldkmp.feature.login.api.LoginFeatureEntry
+import com.gpcasiapac.gpchelloworldkmp.app.pos.features.cart.api.CartFeatureEntry
 import com.gpcasiapac.gpchelloworldkmp.presentation.orders.OrdersScreen
-import com.gpcasiapac.gpchelloworldkmp.presentation.cart.CartScreen
+import org.koin.compose.koinInject
 
 sealed class Screen {
     object Login : Screen()
@@ -28,17 +29,10 @@ fun AppNavigation() {
 
     when (currentScreen) {
         Screen.Login -> {
-            LoginDestination(
-                onNavigationRequested = { navigationEffect ->
-                    when (navigationEffect) {
-                        is LoginScreenContract.Effect.Navigation.NavigateToHome -> {
-                            currentScreen = Screen.MainApp
-                        }
-                    }
-                }
-            )
+            val loginEntry: LoginFeatureEntry = koinInject()
+            loginEntry.Graph(onLoggedIn = { currentScreen = Screen.MainApp })
         }
-        
+
         Screen.MainApp -> {
             MainAppWithBottomNav()
         }
@@ -69,7 +63,8 @@ private fun MainAppWithBottomNav() {
     ) { paddingValues ->
         when (selectedTab) {
             MainAppTab.Pos -> {
-                CartScreen(modifier = Modifier.padding(paddingValues))
+                val cartEntry: CartFeatureEntry = koinInject()
+                cartEntry.Graph(modifier = Modifier.padding(paddingValues))
             }
             MainAppTab.Pickup -> {
                 OrdersScreen(modifier = Modifier.padding(paddingValues))
