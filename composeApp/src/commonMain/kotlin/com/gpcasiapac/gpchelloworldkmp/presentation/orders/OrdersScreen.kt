@@ -9,6 +9,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.gpcasiapac.gpchelloworldkmp.common.presentation.theme.GPCTheme
+import com.gpcasiapac.gpchelloworldkmp.presentation.cart.CartScreen
+import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 fun OrdersScreen(
@@ -26,7 +29,7 @@ fun OrdersScreen(
                 modifier = Modifier.padding(bottom = 16.dp)
             )
         }
-        
+
         items(5) { index ->
             Card(
                 modifier = Modifier.fillMaxWidth()
@@ -49,5 +52,16 @@ fun OrdersScreen(
                 }
             }
         }
+    }
+}
+
+@Composable
+@Preview
+fun CartScreenPreview() {
+    GPCTheme {
+        Surface {
+            OrdersScreen()
+        }
+
     }
 }

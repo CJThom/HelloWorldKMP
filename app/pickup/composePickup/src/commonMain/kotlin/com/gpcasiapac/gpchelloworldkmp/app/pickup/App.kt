@@ -1,6 +1,6 @@
 package com.gpcasiapac.gpchelloworldkmp.app.pickup
 
-import androidx.compose.material3.MaterialTheme
+import com.gpcasiapac.gpchelloworldkmp.common.presentation.theme.GPCTheme
 import androidx.compose.runtime.Composable
 import com.gpcasiapac.gpchelloworldkmp.app.pickup.di.appKoinConfiguration
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -19,7 +19,7 @@ fun App() {
         config = appKoinConfiguration,
         logLevel = Level.INFO
     ) {
-        MaterialTheme {
+        GPCTheme {
             AppNavigation()
         }
     }

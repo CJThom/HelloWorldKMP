@@ -1,6 +1,6 @@
 package com.gpcasiapac.gpchelloworldkmp.app.pos
 
-import androidx.compose.material3.MaterialTheme
+import com.gpcasiapac.gpchelloworldkmp.common.presentation.theme.GPCTheme
 import androidx.compose.runtime.Composable
 import com.gpcasiapac.gpchelloworldkmp.app.pos.di.appKoinConfiguration
 import com.gpcasiapac.gpchelloworldkmp.app.pos.navigation.AppNavigation
@@ -19,7 +19,7 @@ fun App() {
         config = appKoinConfiguration,
         logLevel = Level.INFO
     ) {
-        MaterialTheme {
+        GPCTheme {
             AppNavigation()
         }
     }

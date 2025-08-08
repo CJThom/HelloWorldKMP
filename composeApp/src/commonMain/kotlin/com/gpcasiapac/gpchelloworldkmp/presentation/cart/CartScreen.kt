@@ -9,6 +9,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.gpcasiapac.gpchelloworldkmp.common.presentation.theme.GPCPrimary
+import com.gpcasiapac.gpchelloworldkmp.common.presentation.theme.GPCTheme
+import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 fun CartScreen(
@@ -23,7 +26,7 @@ fun CartScreen(
             fontWeight = FontWeight.Bold,
             modifier = Modifier.padding(bottom = 16.dp)
         )
-        
+
         LazyColumn(
             modifier = Modifier.weight(1f),
             verticalArrangement = Arrangement.spacedBy(8.dp)
@@ -56,7 +59,7 @@ fun CartScreen(
                 }
             }
         }
-        
+
         Card(
             modifier = Modifier.fillMaxWidth()
         ) {
@@ -78,6 +81,16 @@ fun CartScreen(
                     Text("Checkout")
                 }
             }
+        }
+    }
+}
+
+@Composable
+@Preview
+fun CartScreenPreview() {
+    GPCTheme {
+        Surface {
+            CartScreen()
         }
     }
 }
