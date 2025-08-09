@@ -31,32 +31,3 @@ fun AndroidAppNavigation() {
     )
 }
 
-//@Composable
-//fun AndroidAppNavigation() {
-//    val navController = rememberNavController()
-//
-//    NavHost(
-//        navController = navController,
-//        startDestination = AndroidAppScreen.Login.toRoute()
-//    ) {
-//        composable(AndroidAppScreen.Login.toRoute()) {
-//            LoginScreen(
-//                onLoginClick = {
-//                    navController.navigate(AndroidAppScreen.HelloWorld.toRoute()) {
-//                        // Clear the login screen from the back stack
-//                        popUpTo(AndroidAppScreen.Login.toRoute()) { inclusive = true }
-//                    }
-//                }
-//            )
-//        }
-//
-//        composable(AndroidAppScreen.HelloWorld.toRoute()) {
-//            HelloDestination(
-//                onNavigationRequested = { navigationEffect ->
-//                    // Handle any navigation effects from HelloScreen
-//                    // For now, we'll just ignore them since HelloScreen doesn't navigate anywhere
-//                }
-//            )
-//        }
-//    }
-//}

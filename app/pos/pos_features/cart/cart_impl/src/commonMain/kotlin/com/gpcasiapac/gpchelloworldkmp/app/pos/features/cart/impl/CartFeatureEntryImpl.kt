@@ -1,10 +1,6 @@
 package com.gpcasiapac.gpchelloworldkmp.app.pos.features.cart.impl
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -13,9 +9,17 @@ import com.gpcasiapac.gpchelloworldkmp.app.pos.features.cart.api.CartFeatureEntr
 import com.gpcasiapac.gpchelloworldkmp.app.pos.features.cart.api.OrderId
 import com.gpcasiapac.gpchelloworldkmp.app.pos.features.cart.api.PosCartDestination
 
-private object CartRoutes {
-    const val Cart = "cart"
-    const val Checkout = "checkout"
+private object CartNav {
+    const val CART = "cart"
+    const val ORDER_ID = "orderId"
+    const val CHECKOUT_PATTERN = "checkout/{${ORDER_ID}}"
+
+    fun routeOf(dest: PosCartDestination): String = when (dest) {
+        is PosCartDestination.Cart -> CART
+        is PosCartDestination.Checkout -> checkout(dest.orderId)
+    }
+
+    fun checkout(orderId: OrderId): String = "checkout/${'$'}{orderId.value}"
 }
 
 class CartFeatureEntryImpl : CartFeatureEntry {
@@ -26,27 +30,20 @@ class CartFeatureEntryImpl : CartFeatureEntry {
         startDestination: PosCartDestination
     ) {
         val navController = rememberNavController()
-        var currentOrderId by remember(startDestination) {
-            mutableStateOf(if (startDestination is PosCartDestination.Checkout) startDestination.orderId else null)
-        }
-        val startRoute = when (startDestination) {
-            is PosCartDestination.Cart -> CartRoutes.Cart
-            is PosCartDestination.Checkout -> CartRoutes.Checkout
-        }
+        val startRoute = CartNav.routeOf(startDestination)
         NavHost(navController = navController, startDestination = startRoute) {
-            composable(CartRoutes.Cart) {
+            composable(CartNav.routeOf(PosCartDestination.Cart)) {
                 CartDestination(
                     modifier = modifier,
                     onCheckout = {
-                        currentOrderId = OrderId("ORD-123")
-                        navController.navigate(CartRoutes.Checkout)
+                        navController.navigate(CartNav.checkout(OrderId("ORD-123")))
                     }
                 )
             }
-            composable(CartRoutes.Checkout) {
-                val orderId = currentOrderId ?: OrderId("")
+            composable(CartNav.CHECKOUT_PATTERN) { backStackEntry ->
+                val orderId = backStackEntry.arguments?.getString(CartNav.ORDER_ID).orEmpty()
                 CheckoutDestination(
-                    orderId = orderId,
+                    orderId = OrderId(orderId),
                     modifier = modifier,
                     onBack = { navController.popBackStack() }
                 )

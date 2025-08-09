@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 
 // Type-safe destination contract for POS Cart feature
+
 data class OrderId(val value: String)
 
 sealed interface PosCartDestination {

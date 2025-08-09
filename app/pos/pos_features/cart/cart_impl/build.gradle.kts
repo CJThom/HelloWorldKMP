@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.androidKotlinMultiplatformLibrary)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
+    alias(libs.plugins.kotlinSerialization)
 }
 
 kotlin {
@@ -15,6 +16,12 @@ kotlin {
     jvm()
 
     sourceSets {
+        androidMain.dependencies {
+            implementation(libs.androidx.navigation3.runtime)
+            implementation(libs.androidx.navigation3.ui)
+            implementation(libs.androidx.material3.adaptive.navigation3)
+            implementation(libs.androidx.lifecycle.viewmodel.navigation3)
+        }
         commonMain.dependencies {
             implementation(projects.app.pos.posFeatures.cart.cartApi)
             implementation(libs.koin.core)
@@ -24,6 +31,7 @@ kotlin {
             implementation(compose.material3)
             implementation(compose.ui)
             implementation(libs.navigation.compose)
+            implementation(libs.kotlinx.serialization.core)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
