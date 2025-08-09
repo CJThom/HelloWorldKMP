@@ -5,9 +5,10 @@ import kotlinx.coroutines.launch
 import com.gpcasiapac.gpchelloworldkmp.common.presentation.MVIViewModel
 import com.gpcasiapac.gpchelloworldkmp.feature.login.domain.usecase.LoginUseCase
 import com.gpcasiapac.gpchelloworldkmp.feature.login.presentation.model.LoginState
+import com.gpcasiapac.gpchelloworldkmp.feature.login.api.LoginService
 
 class LoginViewModel(
-    private val loginUseCase: LoginUseCase
+    private val loginService: LoginService
 ) : MVIViewModel<LoginScreenContract.Event, LoginScreenContract.State, LoginScreenContract.Effect>() {
     
     override fun setInitialState(): LoginScreenContract.State = LoginScreenContract.State(
@@ -85,7 +86,7 @@ class LoginViewModel(
             )
         }
         
-        when (val result = loginUseCase(viewState.value.loginState.username, viewState.value.loginState.password)) {
+        when (val result = loginService.login(viewState.value.loginState.username, viewState.value.loginState.password)) {
             is LoginUseCase.UseCaseResult.Success -> {
                 setState { 
                     copy(

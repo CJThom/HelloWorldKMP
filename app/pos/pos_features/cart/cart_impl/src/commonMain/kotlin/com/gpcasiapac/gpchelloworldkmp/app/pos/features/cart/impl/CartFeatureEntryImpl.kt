@@ -33,16 +33,16 @@ class CartFeatureEntryImpl : CartFeatureEntry {
         val startRoute = CartNav.routeOf(startDestination)
         NavHost(navController = navController, startDestination = startRoute) {
             composable(CartNav.routeOf(PosCartDestination.Cart)) {
-                CartDestination(
+                Cart(
                     modifier = modifier,
-                    onCheckout = {
-                        navController.navigate(CartNav.checkout(OrderId("ORD-123")))
+                    onCheckout = { orderId ->
+                        navController.navigate(CartNav.checkout(orderId))
                     }
                 )
             }
             composable(CartNav.CHECKOUT_PATTERN) { backStackEntry ->
                 val orderId = backStackEntry.arguments?.getString(CartNav.ORDER_ID).orEmpty()
-                CheckoutDestination(
+                Checkout(
                     orderId = OrderId(orderId),
                     modifier = modifier,
                     onBack = { navController.popBackStack() }

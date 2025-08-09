@@ -17,6 +17,7 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             implementation(projects.shared.features.login.loginDomain)
+            implementation(projects.shared.common.commonDomain)
             implementation(compose.runtime)
             implementation(compose.ui)
         }

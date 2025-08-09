@@ -24,7 +24,16 @@ kotlin {
         }
         commonMain.dependencies {
             implementation(projects.app.pos.posFeatures.cart.cartApi)
+            implementation(projects.app.pos.posFeatures.cart.cartDomain)
+            implementation(projects.shared.common.commonDomain)
+            implementation(projects.shared.common.commonPresentation)
+
             implementation(libs.koin.core)
+            implementation(libs.koin.compose)
+            implementation(libs.koin.compose.viewmodel)
+
+            implementation(libs.androidx.lifecycle.viewmodelCompose)
+            implementation(libs.androidx.lifecycle.runtimeCompose)
 
             implementation(compose.runtime)
             implementation(compose.foundation)
