@@ -4,8 +4,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 
 interface LoginFeatureEntry {
-    val route: String
-
     // Single-screen entry kept for compatibility
     @Composable
     fun Screen(onLoggedIn: () -> Unit = {})

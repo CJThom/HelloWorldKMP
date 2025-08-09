@@ -5,9 +5,8 @@ import com.gpcasiapac.gpchelloworldkmp.common.data.di.commonDataModules
 import com.gpcasiapac.gpchelloworldkmp.feature.hello.data.di.helloDataModule
 import com.gpcasiapac.gpchelloworldkmp.feature.hello.domain.di.helloDomainModule
 import com.gpcasiapac.gpchelloworldkmp.feature.hello.presentation.di.helloPresentationModule
-import com.gpcasiapac.gpchelloworldkmp.feature.login.data.di.loginDataModule
 import com.gpcasiapac.gpchelloworldkmp.feature.login.domain.di.loginDomainModule
-import com.gpcasiapac.gpchelloworldkmp.feature.login.presentation.di.loginPresentationModule
+import com.gpcasiapac.gpchelloworldkmp.feature.login.impl.di.loginImplModule
 
 /**
  * Clean KMP Koin configuration using the new koinConfiguration DSL
@@ -24,10 +23,9 @@ val appKoinConfiguration = koinConfiguration {
         add(helloDomainModule)
         add(helloPresentationModule)
         
-        // Add login modules
-        add(loginDataModule)
+        // Add login modules (consolidated: domain + impl)
         add(loginDomainModule)
-        add(loginPresentationModule)
+        add(loginImplModule)
     }
     
     modules(allModules)

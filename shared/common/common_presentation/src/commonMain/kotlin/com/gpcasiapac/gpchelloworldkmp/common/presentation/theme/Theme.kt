@@ -1,8 +1,11 @@
 package com.gpcasiapac.gpchelloworldkmp.common.presentation.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.material3.Button
+import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import kotlinx.coroutines.FlowPreview
 
 /**
  * GPC Material 3 Theme
@@ -19,6 +22,7 @@ fun GPCTheme(
     content: @Composable () -> Unit
 ) {
 
+
     MaterialTheme(
         colorScheme = GPCLightColorScheme,
         typography = GPCTypography,
@@ -27,3 +31,4 @@ fun GPCTheme(
     )
 
 }
+

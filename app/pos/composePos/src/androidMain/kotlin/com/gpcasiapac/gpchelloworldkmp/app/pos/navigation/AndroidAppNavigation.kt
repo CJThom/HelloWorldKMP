@@ -5,36 +5,27 @@ import androidx.navigation3.runtime.entry
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.ui.NavDisplay
-import com.gpcasiapac.gpchelloworldkmp.app.pos.presentation.login.LoginScreen
-import com.gpcasiapac.gpchelloworldkmp.feature.hello.presentation.hello_screen.HelloDestination
-
-// Extension functions to convert type-safe keys to string routes
-private fun AndroidAppScreen.toRoute(): String = when (this) {
-    AndroidAppScreen.Login -> "android_login"
-    AndroidAppScreen.HelloWorld -> "android_hello_world"
-}
-
+import com.gpcasiapac.gpchelloworldkmp.feature.login.api.LoginFeatureEntry
+import com.gpcasiapac.gpchelloworldkmp.app.pos.features.cart.api.CartFeatureEntry
+import org.koin.compose.koinInject
 
 @Composable
 fun AndroidAppNavigation() {
-    // 6-a  create & remember the back-stack, starting on Login
+    // Create & remember the back-stack, starting on Login
     val backStack = rememberNavBackStack<AndroidAppScreen>(AndroidAppScreen.Login)
 
-    // 6-b  render the current entry
+    // Render the current entry using Navigation 3 and feature API entries
     NavDisplay(
         backStack = backStack,
-        onBack = { backStack.removeLastOrNull() },      // system back
+        onBack = { backStack.removeLastOrNull() },
         entryProvider = entryProvider {
             entry<AndroidAppScreen.Login> {
-                LoginScreen { backStack.add(AndroidAppScreen.HelloWorld) }
+                val loginEntry: LoginFeatureEntry = koinInject()
+                loginEntry.Graph(onLoggedIn = { backStack.add(AndroidAppScreen.HelloWorld) })
             }
             entry<AndroidAppScreen.HelloWorld> {
-                HelloDestination(
-                    onNavigationRequested = { navigationEffect ->
-                        // Handle any navigation effects from HelloScreen
-                        // For now, we'll just ignore them since HelloScreen doesn't navigate anywhere
-                    }
-                )
+                val cartEntry: CartFeatureEntry = koinInject()
+                cartEntry.Graph()
             }
         }
     )

@@ -52,10 +52,8 @@ kotlin {
             implementation(projects.shared.features.hello.helloDomain)
             implementation(projects.shared.features.hello.helloPresentation)
 
-            implementation(projects.shared.features.login.loginData)
             implementation(projects.shared.features.login.loginDomain)
-            implementation(projects.shared.features.login.loginPresentation)
-            // New Login API/Impl
+            // Login API/Impl (data + presentation consolidated into impl)
             implementation(projects.shared.features.login.loginApi)
             implementation(projects.shared.features.login.loginImpl)
 

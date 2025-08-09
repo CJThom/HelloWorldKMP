@@ -4,8 +4,16 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.LocalShipping
 import androidx.compose.material.icons.filled.ShoppingCart
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.Icon
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.navigation3.runtime.entry
 import androidx.navigation3.runtime.entryProvider
@@ -13,8 +21,8 @@ import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.ui.NavDisplay
 import com.gpcasiapac.gpchelloworldkmp.feature.login.presentation.login_screen.LoginDestination
 import com.gpcasiapac.gpchelloworldkmp.feature.login.presentation.login_screen.LoginScreenContract
-import com.gpcasiapac.gpchelloworldkmp.presentation.orders.OrdersScreen
 import com.gpcasiapac.gpchelloworldkmp.presentation.cart.CartScreen
+import com.gpcasiapac.gpchelloworldkmp.presentation.orders.OrdersScreen
 
 @Composable
 fun AndroidAppNavigation() {

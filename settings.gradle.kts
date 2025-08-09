@@ -60,10 +60,8 @@ include(":shared:core:core_data")
 include(":shared:core:core_domain")
 include(":shared:core:core_presentation")
 
-include(":shared:features:login:login_data")
 include(":shared:features:login:login_domain")
-include(":shared:features:login:login_presentation")
-// New API/Impl layers for Login
+// API/Impl layers for Login (data + presentation consolidated into impl)
 include(":shared:features:login:login_api")
 include(":shared:features:login:login_impl")
 

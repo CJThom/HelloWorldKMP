@@ -1,38 +1,35 @@
 package com.gpcasiapac.gpchelloworldkmp.app.pos.navigation
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
-import com.gpcasiapac.gpchelloworldkmp.app.pos.presentation.cart.CartScreen
-import com.gpcasiapac.gpchelloworldkmp.feature.login.presentation.login_screen.LoginDestination
-import com.gpcasiapac.gpchelloworldkmp.feature.login.presentation.login_screen.LoginScreenContract
+import androidx.compose.ui.Modifier
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import com.gpcasiapac.gpchelloworldkmp.app.pos.features.cart.api.CartFeatureEntry
+import com.gpcasiapac.gpchelloworldkmp.feature.login.api.LoginFeatureEntry
+import org.koin.compose.koinInject
 
-sealed class Screen {
-    object Login : Screen()
-    object Cart : Screen()
+private object PosRoutes {
+    const val Login = "pos_login"
+    const val Cart = "pos_cart"
 }
 
 @Composable
-fun AppNavigation() {
-    var currentScreen by remember { mutableStateOf<Screen>(Screen.Login) }
+fun AppNavigation(modifier: Modifier = Modifier) {
+    val navController = rememberNavController()
 
-    when (currentScreen) {
-        Screen.Login -> {
-            LoginDestination(
-                onNavigationRequested = { navigationEffect ->
-                    when (navigationEffect) {
-                        is LoginScreenContract.Effect.Navigation.NavigateToHome -> {
-                            currentScreen = Screen.Cart
-                        }
-                    }
+    NavHost(navController = navController, startDestination = PosRoutes.Login) {
+        composable(PosRoutes.Login) {
+            val loginEntry: LoginFeatureEntry = koinInject()
+            loginEntry.Graph(onLoggedIn = {
+                navController.navigate(PosRoutes.Cart) {
+                    popUpTo(PosRoutes.Login) { inclusive = true }
                 }
-            )
+            })
         }
-        
-        Screen.Cart -> {
-            CartScreen()
+        composable(PosRoutes.Cart) {
+            val cartEntry: CartFeatureEntry = koinInject()
+            cartEntry.Graph(modifier = modifier)
         }
     }
 }

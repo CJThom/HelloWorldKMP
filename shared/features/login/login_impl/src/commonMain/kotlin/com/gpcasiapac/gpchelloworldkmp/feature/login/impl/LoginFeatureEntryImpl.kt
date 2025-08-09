@@ -14,7 +14,6 @@ private object LoginRoutes {
 }
 
 class LoginFeatureEntryImpl : LoginFeatureEntry {
-    override val route: String = LoginRoutes.Login
 
     @Composable
     override fun Screen(onLoggedIn: () -> Unit) {

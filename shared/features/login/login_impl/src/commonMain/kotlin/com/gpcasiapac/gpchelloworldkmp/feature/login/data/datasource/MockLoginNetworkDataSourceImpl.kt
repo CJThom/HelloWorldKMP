@@ -26,9 +26,9 @@ class MockLoginNetworkDataSourceImpl : LoginNetworkDataSource {
         val currentTime = System.currentTimeMillis()
         
         val mockUser = UserDto(
-            id = "user_${loginRequest.username}",
+            id = "user_${'$'}{loginRequest.username}",
             username = loginRequest.username,
-            email = "${loginRequest.username}@example.com",
+            email = "${'$'}{loginRequest.username}@example.com",
             firstName = "John",
             lastName = "Doe",
             isActive = true,
@@ -37,8 +37,8 @@ class MockLoginNetworkDataSourceImpl : LoginNetworkDataSource {
         )
         
         val mockToken = TokenDto(
-            accessToken = "mock_access_token_${System.currentTimeMillis()}",
-            refreshToken = "mock_refresh_token_${System.currentTimeMillis()}",
+            accessToken = "mock_access_token_${'$'}{System.currentTimeMillis()}",
+            refreshToken = "mock_refresh_token_${'$'}{System.currentTimeMillis()}",
             tokenType = "Bearer",
             expiresIn = 3600, // 1 hour
             issuedAt = currentTime,
@@ -69,8 +69,8 @@ class MockLoginNetworkDataSourceImpl : LoginNetworkDataSource {
         
         val currentTime = System.currentTimeMillis()
         val newToken = TokenDto(
-            accessToken = "mock_refreshed_access_token_${currentTime}",
-            refreshToken = "mock_refreshed_refresh_token_${currentTime}",
+            accessToken = "mock_refreshed_access_token_${'$'}currentTime",
+            refreshToken = "mock_refreshed_refresh_token_${'$'}currentTime",
             tokenType = "Bearer",
             expiresIn = 3600,
             issuedAt = currentTime,

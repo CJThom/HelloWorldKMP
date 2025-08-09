@@ -6,8 +6,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import com.gpcasiapac.gpchelloworldkmp.app.pickup.presentation.orders.OrdersScreen
-import com.gpcasiapac.gpchelloworldkmp.feature.login.presentation.login_screen.LoginDestination
-import com.gpcasiapac.gpchelloworldkmp.feature.login.presentation.login_screen.LoginScreenContract
+import com.gpcasiapac.gpchelloworldkmp.feature.login.api.LoginFeatureEntry
+import org.koin.compose.koinInject
 
 sealed class Screen {
     object Login : Screen()
@@ -20,15 +20,8 @@ fun AppNavigation() {
 
     when (currentScreen) {
         Screen.Login -> {
-            LoginDestination(
-                onNavigationRequested = { navigationEffect ->
-                    when (navigationEffect) {
-                        is LoginScreenContract.Effect.Navigation.NavigateToHome -> {
-                            currentScreen = Screen.Orders
-                        }
-                    }
-                }
-            )
+            val loginEntry: LoginFeatureEntry = koinInject()
+            loginEntry.Graph(onLoggedIn = { currentScreen = Screen.Orders })
         }
         
         Screen.Orders -> {

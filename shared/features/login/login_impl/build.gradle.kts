@@ -18,10 +18,21 @@ kotlin {
         commonMain.dependencies {
             implementation(projects.shared.features.login.loginApi)
             implementation(projects.shared.features.login.loginDomain)
-            implementation(projects.shared.features.login.loginData)
-            implementation(projects.shared.features.login.loginPresentation)
+
+            // Consolidated data + presentation in impl
+            implementation(projects.shared.common.commonDomain)
+            implementation(projects.shared.common.commonData)
+            implementation(projects.shared.common.commonPresentation)
 
             implementation(libs.koin.core)
+            implementation(libs.koin.compose)
+            implementation(libs.koin.compose.viewmodel)
+
+            implementation(libs.kotlinx.coroutines.core)
+            implementation(libs.kotlinx.serialization.json)
+
+            implementation(libs.androidx.lifecycle.viewmodelCompose)
+            implementation(libs.androidx.lifecycle.runtimeCompose)
 
             implementation(compose.runtime)
             implementation(compose.foundation)

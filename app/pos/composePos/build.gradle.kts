@@ -53,15 +53,18 @@ kotlin {
             implementation(projects.shared.features.hello.helloDomain)
             implementation(projects.shared.features.hello.helloPresentation)
 
-            implementation(projects.shared.features.login.loginData)
             implementation(projects.shared.features.login.loginDomain)
-            implementation(projects.shared.features.login.loginPresentation)
+            // Login API/Impl (data + presentation consolidated into impl)
+            implementation(projects.shared.features.login.loginApi)
+            implementation(projects.shared.features.login.loginImpl)
 
             // POS-specific dependencies
             implementation(projects.app.pos.posCore.posCoreDomain)
             implementation(projects.app.pos.posCore.posCoreData)
 
-            implementation(projects.app.pos.posFeatures.cart.cartDomain)
+            // POS Cart API/Impl
+            implementation(projects.app.pos.posFeatures.cart.cartApi)
+            implementation(projects.app.pos.posFeatures.cart.cartImpl)
 
 
             implementation(compose.runtime)
