@@ -23,6 +23,7 @@ kotlin {
             implementation(projects.shared.common.commonDomain)
             implementation(projects.shared.common.commonData)
             implementation(projects.shared.common.commonPresentation)
+            implementation(projects.config)
 
             implementation(libs.koin.core)
             implementation(libs.koin.compose)

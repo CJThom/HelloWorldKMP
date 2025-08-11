@@ -11,6 +11,7 @@ import com.gpcasiapac.gpchelloworldkmp.feature.login.data.datasource.MockLoginNe
 import com.gpcasiapac.gpchelloworldkmp.feature.login.data.repository.LoginRepositoryImpl
 import com.gpcasiapac.gpchelloworldkmp.feature.login.domain.repository.LoginRepository
 import org.koin.core.module.dsl.viewModel
+import com.gpcasiapac.gpchelloworldkmp.config.featureflags.FeatureFlags
 
 val loginImplModule = module {
     // Data layer bindings consolidated into impl
@@ -21,7 +22,7 @@ val loginImplModule = module {
     single<LoginService> { LoginServiceImpl(get(), get(), get(), get()) }
 
     // Presentation layer binding consolidated into impl
-    viewModel { LoginViewModel(get()) }
+    viewModel<LoginViewModel> { LoginViewModel(loginService = get(), flags = get()) }
 
     // Feature entry
     single<LoginFeatureEntry> { LoginFeatureEntryImpl() }

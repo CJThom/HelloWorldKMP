@@ -6,9 +6,12 @@ import com.gpcasiapac.gpchelloworldkmp.common.presentation.MVIViewModel
 import com.gpcasiapac.gpchelloworldkmp.feature.login.domain.usecase.LoginUseCase
 import com.gpcasiapac.gpchelloworldkmp.feature.login.presentation.model.LoginState
 import com.gpcasiapac.gpchelloworldkmp.feature.login.api.LoginService
+import com.gpcasiapac.gpchelloworldkmp.config.featureflags.FeatureFlags
+import com.gpcasiapac.gpchelloworldkmp.feature.login.api.LoginFlags
 
 class LoginViewModel(
-    private val loginService: LoginService
+    private val loginService: LoginService,
+    private val flags: FeatureFlags
 ) : MVIViewModel<LoginScreenContract.Event, LoginScreenContract.State, LoginScreenContract.Effect>() {
     
     override fun setInitialState(): LoginScreenContract.State = LoginScreenContract.State(
@@ -88,13 +91,18 @@ class LoginViewModel(
         
         when (val result = loginService.login(viewState.value.loginState.username, viewState.value.loginState.password)) {
             is LoginUseCase.UseCaseResult.Success -> {
-                setState { 
+                setState {
                     copy(
                         loginState = loginState.copy(isLoading = false),
                         error = null
-                    ) 
+                    )
                 }
-                onSuccess()
+                // Feature flag: if MFA is required, don't navigate to home yet
+                if (flags.isEnabled(LoginFlags.MfaRequired)) {
+                    setEffect { LoginScreenContract.Effect.ShowToast("MFA required (demo)") }
+                } else {
+                    onSuccess()
+                }
             }
             is LoginUseCase.UseCaseResult.Error -> {
                 setState { 

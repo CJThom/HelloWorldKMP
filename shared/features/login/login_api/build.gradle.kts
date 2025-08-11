@@ -18,6 +18,7 @@ kotlin {
         commonMain.dependencies {
             implementation(projects.shared.features.login.loginDomain)
             implementation(projects.shared.common.commonDomain)
+            implementation(projects.config)
             implementation(compose.runtime)
             implementation(compose.ui)
         }

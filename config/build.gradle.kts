@@ -18,7 +18,8 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
-            // No dependencies needed for config
+            implementation(libs.kotlinx.coroutines.core)
+            implementation(libs.koin.core)
         }
 
         commonTest.dependencies {
